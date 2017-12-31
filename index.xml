@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>dawndevil&#39;s house</title>
+    <link>http://www.dawndevil.cn/</link>
+    <description>Recent content on dawndevil&#39;s house</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 31 Dec 2017 14:52:13 +0800</lastBuildDate>
+    
+	<atom:link href="http://www.dawndevil.cn/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go back to hugo</title>
+      <link>http://www.dawndevil.cn/post/go-back-to-hugo/</link>
+      <pubDate>Sun, 31 Dec 2017 14:52:13 +0800</pubDate>
+      
+      <guid>http://www.dawndevil.cn/post/go-back-to-hugo/</guid>
+      <description>想了半天, 还是把博客换回静态的把，懒得维护了 😄</description>
+    </item>
+    
+  </channel>
+</rss>
