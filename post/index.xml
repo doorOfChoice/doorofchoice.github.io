@@ -7,10 +7,32 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Copyright (c) 2017, dawndevil; all rights reserved.</copyright>
-    <lastBuildDate>Sun, 31 Dec 2017 15:17:51 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 31 Dec 2017 22:47:59 +0800</lastBuildDate>
     
 	<atom:link href="http://www.dawndevil.cn/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>从2017到2018</title>
+      <link>http://www.dawndevil.cn/post/%E4%BB%8E2017%E5%88%B02018/</link>
+      <pubDate>Sun, 31 Dec 2017 22:47:59 +0800</pubDate>
+      
+      <guid>http://www.dawndevil.cn/post/%E4%BB%8E2017%E5%88%B02018/</guid>
+      <description>不知不觉，一年又过去了，从大二到大三，从19到20.
+0x00 生活上 今年五月和同学去了一趟海南，生平第一次看见了美丽的海.还在飞机上的时候，我就恨不得一跃而下，亲身接触，虽然我不会游泳😄. 我们去了亚龙湾，三亚湾， 大东海，蜈支洲岛。令我印象最深的是蜈支洲岛，当我站在岛上巨大的岩石上向下张望的时候，看着这一望无际，蔚蓝的海，我感觉到了人在这茫茫世界的渺小，人要对自然心存敬畏，也要保持低调。当然最令我感到难受的是在三亚湾那一带，被一司机坑去买水果，贵的要死，但是自己竟然还买了, 难受，买个教训. 亚龙湾也还挺好玩的，虽然水没有蜈支洲岛那边清澈，只能说这个价格能这么玩，也还挺不错了.
+活着就要像这海, 承受的起压在身上的岛，又容的下这世间万物
+附上一张大海的图: 今年的下半年挺倒霉的, 打篮球把腿给拉伤了，休养了整整半年，还没有完全好。 现在打球只要用力跳就会GG， 短跑也不敢加速.
+暑假回来本来励志要开始每天锻炼的，结果坚持了不到2个星期，就远离了亲爱的运动场。运动会跑1500m一半没跑到就退场了(我会铭记的😭)。
+今年还接了个小项目，虽然比较水，不过能赚一点是一点吧~
+ACM校赛一等奖 ACM市级依旧三等奖 （难受）
+0x01 学习上 今年上半年一直在写html,js,php.
+下半年学习了一门新语言golang，并且发现这个语言在开发上给了我极大的便利.不像java一样繁重，比php又更严格。在上高级java这门课程的时候，我们老师说，并发这种东西不好封装，也封装不好，不过可能是学习了golang，我发现老师说的不太对.
+用golang重写了一遍blog, 开源了一个数字化校园爬虫接口和客户端，写了一些小工具。
+但是这一年学习的很多东西还是太过浅显，过完年回来又要开始找工作了，有些东西要规划好了
+OUT OF MEMORY 我的2018 今年初好好的补足一下数据库、java、算法的知识, 希望找一个满意的工作
+今年希望能够写好多好多的开源项目，HHHHH- -
+今年，emmmm, 找个女盆友吧~</description>
+    </item>
     
     <item>
       <title>重回hugo</title>

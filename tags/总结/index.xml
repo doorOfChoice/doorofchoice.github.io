@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>日常 on dawndevil&#39;s house</title>
-    <link>http://www.dawndevil.cn/categories/%E6%97%A5%E5%B8%B8/</link>
-    <description>Recent content in 日常 on dawndevil&#39;s house</description>
+    <title>总结 on dawndevil&#39;s house</title>
+    <link>http://www.dawndevil.cn/tags/%E6%80%BB%E7%BB%93/</link>
+    <description>Recent content in 总结 on dawndevil&#39;s house</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Copyright (c) 2017, dawndevil; all rights reserved.</copyright>
     <lastBuildDate>Sun, 31 Dec 2017 22:47:59 +0800</lastBuildDate>
     
-	<atom:link href="http://www.dawndevil.cn/categories/%E6%97%A5%E5%B8%B8/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://www.dawndevil.cn/tags/%E6%80%BB%E7%BB%93/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -32,17 +32,6 @@ ACM校赛一等奖 ACM市级依旧三等奖 （难受）
 OUT OF MEMORY 我的2018 今年初好好的补足一下数据库、java、算法的知识, 希望找一个满意的工作
 今年希望能够写好多好多的开源项目，HHHHH- -
 今年，emmmm, 找个女盆友吧~</description>
-    </item>
-    
-    <item>
-      <title>重回hugo</title>
-      <link>http://www.dawndevil.cn/post/%E9%87%8D%E5%9B%9Ehugo/</link>
-      <pubDate>Sun, 31 Dec 2017 15:17:51 +0800</pubDate>
-      
-      <guid>http://www.dawndevil.cn/post/%E9%87%8D%E5%9B%9Ehugo/</guid>
-      <description>烂服务器，疯狂宕机，自己的一套博客部署上去就挂了
-想了半天, 还是把博客换回静态的把，懒得维护了
-😄</description>
     </item>
     
   </channel>

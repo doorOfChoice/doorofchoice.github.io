@@ -92,3 +92,7 @@ a.ui.label {
 .about {
   overflow: scroll;
 }
+
+img {
+  max-width: 100%;
+}
