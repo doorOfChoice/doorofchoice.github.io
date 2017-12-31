@@ -10,14 +10,5 @@
 	<atom:link href="http://www.dawndevil.cn/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
-    <item>
-      <title>日常</title>
-      <link>http://www.dawndevil.cn/tags/%E6%97%A5%E5%B8%B8/</link>
-      <pubDate>Sun, 31 Dec 2017 14:52:13 +0800</pubDate>
-      
-      <guid>http://www.dawndevil.cn/tags/%E6%97%A5%E5%B8%B8/</guid>
-      <description></description>
-    </item>
-    
   </channel>
 </rss>
