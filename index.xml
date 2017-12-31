@@ -6,9 +6,19 @@
     <description>Recent content on dawndevil&#39;s house</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
+    <lastBuildDate>Sun, 31 Dec 2017 15:17:51 +0800</lastBuildDate>
     
 	<atom:link href="http://www.dawndevil.cn/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>重回hugo</title>
+      <link>http://www.dawndevil.cn/post/%E9%87%8D%E5%9B%9Ehugo/</link>
+      <pubDate>Sun, 31 Dec 2017 15:17:51 +0800</pubDate>
+      
+      <guid>http://www.dawndevil.cn/post/%E9%87%8D%E5%9B%9Ehugo/</guid>
+      <description>想了半天, 还是把博客换回静态的把，懒得维护了 😄</description>
+    </item>
     
   </channel>
 </rss>
