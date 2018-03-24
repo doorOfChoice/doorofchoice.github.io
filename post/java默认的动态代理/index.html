@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>dawndevil&#39;s house</title>
+
+  
+  
+  <meta name="author" content="dawndevil" />
+  <meta name="description" content="Java默认的动态代理 0x00 静态代理 在使用动态代理前，有一种代理的方式叫做静态代理, 假设如下A实现了Play接口
+interface Play { void play(); } class A implements Play{ public void play() { //play的动作 } }  现在如果我想在A执行play之前做一些额外的动作，可以通过如下暴力方式
+class B implements Play { private A a; public B(A a){this.a = a;} public void play(){ //do before a.play(); } }  这种手动在需要代理的位置进行添加额外动作的方式称之为静态代理
+0x01 动态代理 当然，java里面有更聪明的方式，即动态代理
+java 默认的动态代理依赖于接口InvocationHandler, 该接口有如下方法
+//proxy: 代理的实例对象 //method: 调用的方法 //args: 调用方法传递的参数 //返回值：动态调用method之后要返回的值，一般返回method调用后原始返回的值 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable ;  以下是一个简单的实现" />
+
+
+
+<meta name="generator" content="Hugo 0.31.1" />
+
+
+<link rel="canonical" href="http://www.dawndevil.cn/post/java%E9%BB%98%E8%AE%A4%E7%9A%84%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" />
+<link rel="alternative" href="/index.xml" title="dawndevil&#39;s house" type="application/atom+xml" />
+
+<link href="https://cdn.bootcss.com/semantic-ui/2.2.13/semantic.min.css" rel="stylesheet" >
+<link rel="stylesheet" href="/css/site.css">
+
+</head>
+
+<body>
+  <div class="flip-container">
+    <div class="flipper">
+      <section class="front">
+        
+<nav class="ui top secondary menu">
+  <div class="item">
+    <i class="inverted big link bullseye icon dream-flip-toggle" title="Flip it!"></i>
+  </div>
+  <div class="item">
+    <a href="/">
+      <i class="inverted big home icon" title="Home"></i>
+    </a>
+  </div>
+</nav>
+ 
+<div class="ui centered grid">
+  <div class="fifteen wide mobile fifteen wide tablet eleven wide computer column post-list">
+
+    <section class="ui secondary top attached black segment">
+      <header>
+        <h1 class="ui header">
+          
+          <div class="sub header">@ dawndevil · Jan 1, 0001 · 2 min read · Update at Jan 1, 0001</div>
+        </h1>
+      </header>
+      <article style="margin-top: 2rem; font-size: 1.4rem;">
+
+<h1 id="java默认的动态代理">Java默认的动态代理</h1>
+
+<h2 id="0x00-静态代理">0x00 静态代理</h2>
+
+<p>在使用动态代理前，有一种代理的方式叫做<code>静态代理</code>, 假设如下A实现了Play接口</p>
+
+<pre><code class="language-java">interface Play {
+  void play();
+}
+
+class A implements Play{
+  public void play() {
+    //play的动作
+  }
+}
+</code></pre>
+
+<p>现在如果我想在A执行play之前做一些额外的动作，可以通过如下暴力方式</p>
+
+<pre><code class="language-java">class B implements Play {
+  private A a;
+  public B(A a){this.a = a;}
+  public void play(){
+    //do before
+    a.play();
+  }
+}
+</code></pre>
+
+<p>这种手动在需要代理的位置进行添加额外动作的方式称之为静态代理</p>
+
+<h2 id="0x01-动态代理">0x01 动态代理</h2>
+
+<p>当然，java里面有更聪明的方式，即动态代理</p>
+
+<p>java 默认的动态代理依赖于接口<code>InvocationHandler</code>, 该接口有如下方法</p>
+
+<pre><code class="language-java">//proxy: 代理的实例对象
+//method: 调用的方法
+//args: 调用方法传递的参数
+//返回值：动态调用method之后要返回的值，一般返回method调用后原始返回的值
+public Object invoke(Object proxy, Method method, Object[] args) throws Throwable ;
+</code></pre>
+
+<p>以下是一个简单的实现</p>
+
+<pre><code class="language-java">class AProxy implements InvocationHandler {
+  private A a;
+  
+  public AProxy(A a){this.a = a;}
+  
+  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    System.out.println(&quot;invoke before&quot;);
+    Object result = method.invoke(a, args);
+    System.out.println(&quot;invoke after&quot;);
+    return result;
+  }
+}
+public class Main {
+	public static void main(String[] args) {
+      	A a = new A();
+	    Play play = (PLay)Proxy.newProxyInstance(
+          Main.class.getClassLoader(), //类加载器
+          a.getClass().getInterfaces(), //代理的接口
+          new AProxy(a) //实现了InvocationHandler的对象
+        );
+      	play.play();
+	}
+}
+
+</code></pre>
+
+<p>这串代码会在调用play()方法前后分别打印出&rdquo;invoke before&rdquo; 和 &ldquo;invoke after&rdquo;, 而不用再去新建一个类。</p>
+
+<p>不过java默认的动态代理只能通过接口代理，而不能通过类，更不能通过类抽象出接口，这是比较坑的。</p>
+
+<h2 id="0x02-invoke中proxy参数是什么">0x02 invoke中proxy参数是什么</h2>
+
+<p>官方给的话很简单，十分的简单</p>
+
+<p><code>the proxy instance that the method was invoked on</code></p>
+
+<p>也就是说一个代理的实例对象，但是这个代理的实例对象又是什么呢？？？</p>
+
+<p>我们通过一反编译proxy对象，看看其内部结构。</p>
+
+<pre><code class="language-java">//生成代理类的字节码
+byte[] buf = ProxyGenerator.generateProxyClass(proxy.getClass().getSimpleName(), proxy.getClass().getInterfaces());
+FileOutputStream fo = new FileOutputStream(proxy.getClass().getSimpleName() + &quot;.class&quot;);
+fo.write(buf);
+fo.flush();
+fo.close();
+</code></pre>
+
+<p>调用上面这串代码后，生成了如下的类</p>
+
+<pre><code class="language-java">public final class $Proxy0 extends Proxy implements Play {
+    private static Method m1;
+    private static Method m2;
+    private static Method m3;
+    private static Method m0;
+
+    public $Proxy0(InvocationHandler var1) throws  {
+      	//把var1传给父类构造器，super.h就是对应的var1
+        super(var1);
+    }
+	//这是调用Object类的equals方法
+    public final boolean equals(Object var1) throws  {
+        try {
+            return (Boolean)super.h.invoke(this, m1, new Object[]{var1});
+        } catch (RuntimeException | Error var3) {
+            throw var3;
+        } catch (Throwable var4) {
+            throw new UndeclaredThrowableException(var4);
+        }
+    }
+	//这是调用Object类的toString方法
+    public final String toString() throws  {
+        try {
+            return (String)super.h.invoke(this, m2, (Object[])null);
+        } catch (RuntimeException | Error var2) {
+            throw var2;
+        } catch (Throwable var3) {
+            throw new UndeclaredThrowableException(var3);
+        }
+    }
+	//这是调用Play接口的play方法
+
+    public final String play() throws  {
+        try {
+            return (String)super.h.invoke(this, m3, (Object[])null);
+        } catch (RuntimeException | Error var2) {
+            throw var2;
+        } catch (Throwable var3) {
+            throw new UndeclaredThrowableException(var3);
+        }
+    }
+	//这是调用Object类的hashCode方法
+    public final int hashCode() throws  {
+        try {
+            return (Integer)super.h.invoke(this, m0, (Object[])null);
+        } catch (RuntimeException | Error var2) {
+            throw var2;
+        } catch (Throwable var3) {
+            throw new UndeclaredThrowableException(var3);
+        }
+    }
+
+    static {
+        try {
+            m1 = Class.forName(&quot;java.lang.Object&quot;).getMethod(&quot;equals&quot;, Class.forName(&quot;java.lang.Object&quot;));
+            m2 = Class.forName(&quot;java.lang.Object&quot;).getMethod(&quot;toString&quot;);
+            m3 = Class.forName(&quot;Play&quot;).getMethod(&quot;play&quot;);
+            m0 = Class.forName(&quot;java.lang.Object&quot;).getMethod(&quot;hashCode&quot;);
+        } catch (NoSuchMethodException var2) {
+            throw new NoSuchMethodError(var2.getMessage());
+        } catch (ClassNotFoundException var3) {
+            throw new NoClassDefFoundError(var3.getMessage());
+        }
+    }
+}
+
+</code></pre>
+
+<p>从上面的反编译代码可以分析出来</p>
+
+<ol>
+<li>其实java默认的动态代理就是动态的代替静态代理手工添加代码的行为。那么invoke的proxy参数也就是这个$Proxy类，之所以<code>Proxy.newProxyInstance</code>能够转换成对应的接口，也是因为proxy实现了传递进去的接口.</li>
+<li>其实每个invoke的调用也都是$Proxy调用invoke接口，这也就是为什么调用proxy的方法会导致死循环的原因了。</li>
+</ol>
+
+<h2 id="0x03-缺点">0x03 缺点</h2>
+
+<p>我能感受到的缺点就是</p>
+
+<ol>
+<li>不能够代理类</li>
+<li>不能从类抽象出接口</li>
+</ol>
+</article>
+    </section>
+
+    <footer class="ui secondary attached segment dream-tags">
+      
+      <span>No Tag</span>
+      
+    </footer>
+
+    
+
+    
+    <footer class="ui secondary bottom attached stacked segment">
+      <div id="disqus_thread"></div>
+      <script>
+      
+
+      
+
+
+      var disqus_config = function () {
+      this.page.url = 'http:\/\/www.dawndevil.cn\/post\/java%E9%BB%98%E8%AE%A4%E7%9A%84%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86\/';  
+      this.page.identifier = '\/post\/java%E9%BB%98%E8%AE%A4%E7%9A%84%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86\/'; 
+      };
+
+      (function() { 
+      var d = document, s = d.createElement('script');
+      s.src = 'https://' + 'doorofchoices' + '.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+      })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </footer>
+    
+
+  </div>
+  <div class="fifteen wide mobile fifteen wide tablet four wide computer column">
+
+    <section class="ui top attached center aligned inverted segment">
+  <div class="ui small circular image">
+    
+    <img src='/img/defaultAvatar.png'>
+    
+  </div>
+  <h3 class="ui header">dawndevil&#39;s blog<div class="sub header" style="color: white;">一枚大三在校程序猿</div>
+  </h3>
+  <a id="tag-category-pop" class="ui red right corner label">
+    <i class="pointing down icon" title="Click this to pop tags and categories"></i>
+  </a>
+</section>
+
+
+
+
+
+<section class="ui bottom attached center aligned inverted segment">
+    <p>© 2017-2018 dawndevil&#39;s house</p>
+    <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+</section>
+
+  </div>
+</div>
+
+      </section>
+      <section class="back">
+        <nav class="ui top secondary menu" style="overflow: scroll">
+  <div class="item">
+    <i class="inverted big link bullseye icon dream-flip-toggle" title="Flip it!"></i>
+  </div>
+  
+  <div class="item">
+    <a href="mailto:351987551@qq.com">
+      <i class="inverted big mail icon" title="email"></i>
+    </a>
+  </div>
+  
+  
+  <div class="item">
+    <a href="https://github.com/doorOfChoice" target="_blank">
+      <i class="inverted big github icon" title="github"></i>
+    </a>
+  </div>
+  
+  
+  
+  
+</nav>
+
+<div class="ui centered grid">
+  <div class="fifteen wide mobile fifteen wide tablet fifteen wide computer column">
+
+    <section class="ui stacked segments about">
+      <header class="ui inverted segment">
+        <h2 class="ui header">About me</h2>
+      </header>
+
+      <article class="ui inverted segment">
+        
+          <p>后端工程师一枚, 平日里喜欢用<b>golang</b>, <b>java</b>做开发</p>
+        
+          <p>喜欢在github上面寻找开源项目, 也喜欢自己发布开源项目</p>
+        
+          <p>喜欢看看电影，吹吹口琴，口技不错😄</p>
+        
+          <p><br/><br/></p>
+        
+          <p>友情链接:</p>
+        
+          <p><a href='https://freder-chen.github.io/'>freder(c语言,windows应用开发者)</a></p>
+        
+          <p><a href='https://jiangkunhe.github.io/'>jiangkunhe(前端工程师)</a></p>
+        
+          <p><a href='https://mrcodex.com/'>mrcode(前端工程师)</a></p>
+        
+          <p><a href='https://www.crazyforcode.org/'>CFC团队</a></p>
+        
+      </article>
+
+      
+
+      
+      
+    </section>
+
+  </div>
+</div>
+
+      </section>
+    </div>
+  </div>
+
+  
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/semantic-ui/2.2.13/semantic.min.js"></script>
+<script src="/js/bg.js"></script>
+<script src="/js/site.js"></script>
+
+
+</body>
+
+</html>

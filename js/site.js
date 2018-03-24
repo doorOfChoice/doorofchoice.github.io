@@ -1,22 +1,35 @@
-var SemanticUIColors = ["red", "orange", "yellow", "olive", "green", "teal", "blue", "violet", "purple", "pink", "brown"]
+var SemanticUIColors = [
+  'red',
+  'orange',
+  'yellow',
+  'olive',
+  'green',
+  'teal',
+  'blue',
+  'violet',
+  'purple',
+  'pink',
+  'brown'
+]
 
-$(document).ready(function () {
-  $('.dream-flip-toggle')
-    .click(function () {
-      var c = $('.flip-container')
+$(document).ready(function() {
+  $('.dream-flip-toggle').click(function() {
+    var c = $('.flip-container')
 
-      if (dreamBodyBgSwitchIndex === 0) {
-        c.css('overflow', 'hidden')
-        setBackground(dreamBody, dreamBodyBgSwitch[1])
-        dreamBodyBgSwitchIndex = 1
-      } else {
-        c.removeAttr('style')
-        setBackground(dreamBody, dreamBodyBgSwitch[0])
-        dreamBodyBgSwitchIndex = 0
-      }
+    if (dreamBodyBgSwitchIndex === 0) {
+      c.css('overflow', 'hidden')
+      setBackground(dreamBody, dreamBodyBgSwitch[1])
+      dreamBodyBgSwitchIndex = 1
+      $('.flipper .front .ui.menu').css('overflow-x', '')
+    } else {
+      c.removeAttr('style')
+      setBackground(dreamBody, dreamBodyBgSwitch[0])
+      dreamBodyBgSwitchIndex = 0
+      $('.flipper .front .ui.menu').css('overflow-x', 'auto')
+    }
 
-      c.toggleClass('flip-it')
-    })
+    c.toggleClass('flip-it')
+  })
 
   var postList = $('.post-list')
   var pMaxHeight = $(window).height() - $('.ui.menu').outerHeight(true)
@@ -24,16 +37,15 @@ $(document).ready(function () {
 
   $('.ui.cards .image')
     .dimmer({
-      opacity: .6,
+      opacity: 0.6,
       closable: false
     })
     .dimmer('show')
 
-  $('.ui.accordion')
-    .accordion()
+  $('.ui.accordion').accordion()
 
-  $('#tag-category-pop').click(function () {
-    var dt = $('.dream-tags')
+  $('#tag-category-pop').click(function() {
+    var dt = $('.dream-header-tags.dream-tags')
     var dc = $('.dream-categories')
     var dtDisplay = dt.css('display')
     var dcDisplay = dc.css('display')
