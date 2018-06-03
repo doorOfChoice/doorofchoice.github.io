@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  
+
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Java默认动态代理  &middot; dawndevil&#39;s house</title>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="canonical" href="http://www.dawndevil.cn/java%E9%BB%98%E8%AE%A4%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/">
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+  <div class="navbar">
+    <ul>
+      <li><a href="/" class="logo-title">HELLO,WORLD!</a></li>
+      <li><a href="/categories">CATEGORIES</a></li>
+      <li><a href="/tags">TAGS</a></li>
+    </ul>
+  </div>
+  <div class="container">
+    <div class="title">
+      <a href="/">
+        <img src="/images/logo.png" width="260px" height="48px" />
+      </a>
+    </div>
+
+
+<a href="http://www.dawndevil.cn/java%E9%BB%98%E8%AE%A4%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/">
+  <div class="post-title">
+    <img src="/images/post-title-icon.png" />
+    <div class="post-meta">
+      <time>21 Mar 2018, 18:17</time>
+      <h1>Java默认动态代理</h1>
+    </div>
+  </div>
+</a>
+
+<div class="post-toc">
+  <span class="title">
+    Table of contents
+  </span>
+  <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#0x00-静态代理">0x00 静态代理</a></li>
+<li><a href="#0x01-动态代理">0x01 动态代理</a></li>
+<li><a href="#0x02-invoke中proxy参数是什么">0x02 invoke中proxy参数是什么</a></li>
+<li><a href="#0x03-缺点">0x03 缺点</a></li>
+</ul></li>
+</ul>
+</nav>
+</div>
+
+<section class="post-content">
+  <p></p>
+
+<h2 id="0x00-静态代理">0x00 静态代理</h2>
+
+<p>在使用动态代理前，有一种代理的方式叫做<code>静态代理</code>, 假设如下A实现了Play接口</p>
+
+<pre><code class="language-java">interface Play {
+  void play();
+}
+
+class A implements Play{
+  public void play() {
+    //play的动作
+  }
+}
+</code></pre>
+
+<p>现在如果我想在A执行play之前做一些额外的动作，可以通过如下暴力方式</p>
+
+<pre><code class="language-java">class B implements Play {
+  private A a;
+  public B(A a){this.a = a;}
+  public void play(){
+    //do before
+    a.play();
+  }
+}
+</code></pre>
+
+<p>这种手动在需要代理的位置进行添加额外动作的方式称之为静态代理</p>
+
+<h2 id="0x01-动态代理">0x01 动态代理</h2>
+
+<p>当然，java里面有更聪明的方式，即动态代理</p>
+
+<p>java 默认的动态代理依赖于接口<code>InvocationHandler</code>, 该接口有如下方法</p>
+
+<pre><code class="language-java">//proxy: 代理的实例对象
+//method: 调用的方法
+//args: 调用方法传递的参数
+//返回值：动态调用method之后要返回的值，一般返回method调用后原始返回的值
+public Object invoke(Object proxy, Method method, Object[] args) throws Throwable ;
+</code></pre>
+
+<p>以下是一个简单的实现</p>
+
+<pre><code class="language-java">class AProxy implements InvocationHandler {
+  private A a;
+  
+  public AProxy(A a){this.a = a;}
+  
+  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    System.out.println(&quot;invoke before&quot;);
+    Object result = method.invoke(a, args);
+    System.out.println(&quot;invoke after&quot;);
+    return result;
+  }
+}
+public class Main {
+	public static void main(String[] args) {
+      	A a = new A();
+	    Play play = (PLay)Proxy.newProxyInstance(
+          Main.class.getClassLoader(), //类加载器
+          a.getClass().getInterfaces(), //代理的接口
+          new AProxy(a) //实现了InvocationHandler的对象
+        );
+      	play.play();
+	}
+}
+
+</code></pre>
+
+<p>这串代码会在调用play()方法前后分别打印出&rdquo;invoke before&rdquo; 和 &ldquo;invoke after&rdquo;, 而不用再去新建一个类。</p>
+
+<p>不过java默认的动态代理只能通过接口代理，而不能通过类，更不能通过类抽象出接口，这是比较坑的。</p>
+
+<h2 id="0x02-invoke中proxy参数是什么">0x02 invoke中proxy参数是什么</h2>
+
+<p>官方给的话很简单，十分的简单</p>
+
+<p><code>the proxy instance that the method was invoked on</code></p>
+
+<p>也就是说一个代理的实例对象，但是这个代理的实例对象又是什么呢？？？</p>
+
+<p>我们通过一反编译proxy对象，看看其内部结构。</p>
+
+<pre><code class="language-java">//生成代理类的字节码
+byte[] buf = ProxyGenerator.generateProxyClass(proxy.getClass().getSimpleName(), proxy.getClass().getInterfaces());
+FileOutputStream fo = new FileOutputStream(proxy.getClass().getSimpleName() + &quot;.class&quot;);
+fo.write(buf);
+fo.flush();
+fo.close();
+</code></pre>
+
+<p>调用上面这串代码后，生成了如下的类</p>
+
+<pre><code class="language-java">public final class $Proxy0 extends Proxy implements Play {
+    private static Method m1;
+    private static Method m2;
+    private static Method m3;
+    private static Method m0;
+
+    public $Proxy0(InvocationHandler var1) throws  {
+      	//把var1传给父类构造器，super.h就是对应的var1
+        super(var1);
+    }
+	//这是调用Object类的equals方法
+    public final boolean equals(Object var1) throws  {
+        try {
+            return (Boolean)super.h.invoke(this, m1, new Object[]{var1});
+        } catch (RuntimeException | Error var3) {
+            throw var3;
+        } catch (Throwable var4) {
+            throw new UndeclaredThrowableException(var4);
+        }
+    }
+	//这是调用Object类的toString方法
+    public final String toString() throws  {
+        try {
+            return (String)super.h.invoke(this, m2, (Object[])null);
+        } catch (RuntimeException | Error var2) {
+            throw var2;
+        } catch (Throwable var3) {
+            throw new UndeclaredThrowableException(var3);
+        }
+    }
+	//这是调用Play接口的play方法
+
+    public final String play() throws  {
+        try {
+            return (String)super.h.invoke(this, m3, (Object[])null);
+        } catch (RuntimeException | Error var2) {
+            throw var2;
+        } catch (Throwable var3) {
+            throw new UndeclaredThrowableException(var3);
+        }
+    }
+	//这是调用Object类的hashCode方法
+    public final int hashCode() throws  {
+        try {
+            return (Integer)super.h.invoke(this, m0, (Object[])null);
+        } catch (RuntimeException | Error var2) {
+            throw var2;
+        } catch (Throwable var3) {
+            throw new UndeclaredThrowableException(var3);
+        }
+    }
+
+    static {
+        try {
+            m1 = Class.forName(&quot;java.lang.Object&quot;).getMethod(&quot;equals&quot;, Class.forName(&quot;java.lang.Object&quot;));
+            m2 = Class.forName(&quot;java.lang.Object&quot;).getMethod(&quot;toString&quot;);
+            m3 = Class.forName(&quot;Play&quot;).getMethod(&quot;play&quot;);
+            m0 = Class.forName(&quot;java.lang.Object&quot;).getMethod(&quot;hashCode&quot;);
+        } catch (NoSuchMethodException var2) {
+            throw new NoSuchMethodError(var2.getMessage());
+        } catch (ClassNotFoundException var3) {
+            throw new NoClassDefFoundError(var3.getMessage());
+        }
+    }
+}
+
+</code></pre>
+
+<p>从上面的反编译代码可以分析出来</p>
+
+<ol>
+<li>其实java默认的动态代理就是动态的代替静态代理手工添加代码的行为。那么invoke的proxy参数也就是这个$Proxy类，之所以<code>Proxy.newProxyInstance</code>能够转换成对应的接口，也是因为proxy实现了传递进去的接口.</li>
+<li>其实每个invoke的调用也都是$Proxy调用invoke接口，这也就是为什么调用proxy的方法会导致死循环的原因了。</li>
+</ol>
+
+<h2 id="0x03-缺点">0x03 缺点</h2>
+
+<p>我能感受到的缺点就是</p>
+
+<ol>
+<li>不能够代理类</li>
+<li>不能从类抽象出接口</li>
+</ol>
+</section>
+
+<div class="share">
+  <a href="http://www.facebook.com/sharer.php?src=bm&u=http%3a%2f%2fwww.dawndevil.cn%2fjava%25E9%25BB%2598%25E8%25AE%25A4%25E5%258A%25A8%25E6%2580%2581%25E4%25BB%25A3%25E7%2590%2586%2f&t=Java%e9%bb%98%e8%ae%a4%e5%8a%a8%e6%80%81%e4%bb%a3%e7%90%86" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-facebook"></i></a>
+  <a href="http://twitter.com/intent/tweet?url=http%3a%2f%2fwww.dawndevil.cn%2fjava%25E9%25BB%2598%25E8%25AE%25A4%25E5%258A%25A8%25E6%2580%2581%25E4%25BB%25A3%25E7%2590%2586%2f&text=Java%e9%bb%98%e8%ae%a4%e5%8a%a8%e6%80%81%e4%bb%a3%e7%90%86&tw_p=tweetbutton" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-twitter"></i></a>
+  <a href="https://plus.google.com/share?url=http%3a%2f%2fwww.dawndevil.cn%2fjava%25E9%25BB%2598%25E8%25AE%25A4%25E5%258A%25A8%25E6%2580%2581%25E4%25BB%25A3%25E7%2590%2586%2f" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-google-plus"></i></a>
+  <a href="http://getpocket.com/edit?url=http%3a%2f%2fwww.dawndevil.cn%2fjava%25E9%25BB%2598%25E8%25AE%25A4%25E5%258A%25A8%25E6%2580%2581%25E4%25BB%25A3%25E7%2590%2586%2f&title=Java%e9%bb%98%e8%ae%a4%e5%8a%a8%e6%80%81%e4%bb%a3%e7%90%86" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-get-pocket"></i></a>
+</div>
+
+<div class="post-meta-code">
+  <div class="desc">
+    public string description() {
+    <div class="desc">val author = "
+    
+        <a href="mailto:"></a>
+    ";
+    </div>
+    
+    <div class="desc">
+      val categories = [
+      
+      
+      <a href="http://www.dawndevil.cn//categories/%E6%8A%80%E6%9C%AF">"技术"</a>
+      
+      ];
+    </div>
+    
+    }
+  </div>
+  <div class="desc">
+    public string tags() {
+      <div class="desc">
+        val tags = [
+        
+          
+          <a href="http://www.dawndevil.cn/tags/java">"java"</a>
+          
+        
+        ];
+      </div>
+    }
+  </div>
+</div>
+
+
+<div class="post-comment">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "doorofchoices" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<div class="paging post-paging">
+  
+  <a class="left" href="http://www.dawndevil.cn/%E5%B0%8F%E8%AE%B0%E6%AD%A3%E5%88%99/" rel="prev">
+    <i class="fa fa-caret-left" aria-hidden="true"></i> <span>小记正则(一)</span>
+  </a>
+  
+  
+  <a class="right" href="http://www.dawndevil.cn/%E4%BB%8E2017%E5%88%B02018/" rel="next">
+    <span>从2017到2018</span> <i class="fa fa-caret-right" aria-hidden="true"></i>
+  </a>
+  
+</div>
+
+<footer class="footer">
+  COPYRIGHT (C) <a href="https://blog.lulab.net">DONGGEUN,BANG</a>. ALL RIGHTS RESERVED.
+</footer>
+
+</body>
+</html>
+

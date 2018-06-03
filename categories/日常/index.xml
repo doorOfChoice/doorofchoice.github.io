@@ -6,26 +6,35 @@
     <description>Recent content in 日常 on dawndevil&#39;s house</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 31 Dec 2017 22:47:59 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 03 Jun 2018 16:29:25 +0800</lastBuildDate>
     
 	<atom:link href="http://www.dawndevil.cn/categories/%E6%97%A5%E5%B8%B8/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>小记正则(一)</title>
+      <link>http://www.dawndevil.cn/%E5%B0%8F%E8%AE%B0%E6%AD%A3%E5%88%99/</link>
+      <pubDate>Sun, 03 Jun 2018 16:29:25 +0800</pubDate>
+      
+      <guid>http://www.dawndevil.cn/%E5%B0%8F%E8%AE%B0%E6%AD%A3%E5%88%99/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>从2017到2018</title>
-      <link>http://www.dawndevil.cn/post/%E4%BB%8E2017%E5%88%B02018/</link>
+      <link>http://www.dawndevil.cn/%E4%BB%8E2017%E5%88%B02018/</link>
       <pubDate>Sun, 31 Dec 2017 22:47:59 +0800</pubDate>
       
-      <guid>http://www.dawndevil.cn/post/%E4%BB%8E2017%E5%88%B02018/</guid>
+      <guid>http://www.dawndevil.cn/%E4%BB%8E2017%E5%88%B02018/</guid>
       <description>&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>重回hugo</title>
-      <link>http://www.dawndevil.cn/post/%E9%87%8D%E5%9B%9Ehugo/</link>
+      <link>http://www.dawndevil.cn/%E9%87%8D%E5%9B%9Ehugo/</link>
       <pubDate>Sun, 31 Dec 2017 15:17:51 +0800</pubDate>
       
-      <guid>http://www.dawndevil.cn/post/%E9%87%8D%E5%9B%9Ehugo/</guid>
+      <guid>http://www.dawndevil.cn/%E9%87%8D%E5%9B%9Ehugo/</guid>
       <description>&lt;p&gt;&lt;/p&gt;</description>
     </item>
     

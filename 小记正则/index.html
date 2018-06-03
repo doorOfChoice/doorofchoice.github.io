@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  
+
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>小记正则(一)  &middot; dawndevil&#39;s house</title>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="canonical" href="http://www.dawndevil.cn/%E5%B0%8F%E8%AE%B0%E6%AD%A3%E5%88%99/">
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+  <div class="navbar">
+    <ul>
+      <li><a href="/" class="logo-title">HELLO,WORLD!</a></li>
+      <li><a href="/categories">CATEGORIES</a></li>
+      <li><a href="/tags">TAGS</a></li>
+    </ul>
+  </div>
+  <div class="container">
+    <div class="title">
+      <a href="/">
+        <img src="/images/logo.png" width="260px" height="48px" />
+      </a>
+    </div>
+
+
+<a href="http://www.dawndevil.cn/%E5%B0%8F%E8%AE%B0%E6%AD%A3%E5%88%99/">
+  <div class="post-title">
+    <img src="/images/post-title-icon.png" />
+    <div class="post-meta">
+      <time>03 Jun 2018, 16:29</time>
+      <h1>小记正则(一)</h1>
+    </div>
+  </div>
+</a>
+
+<div class="post-toc">
+  <span class="title">
+    Table of contents
+  </span>
+  <nav id="TableOfContents">
+<ul>
+<li><a href="#小记正则-一">小记正则(一)</a>
+<ul>
+<li><a href="#0x00-什么是正则表达式">0x00 什么是正则表达式</a></li>
+<li><a href="#0x01-常见的标记">0x01 常见的标记</a></li>
+<li><a href="#0x02-浅谈贪婪和非贪婪">0x02 浅谈贪婪和非贪婪</a>
+<ul>
+<li><a href="#贪婪">贪婪</a></li>
+<li><a href="#非贪婪">非贪婪</a></li>
+</ul></li>
+<li><a href="#0x03-浅谈">0x03 浅谈 |</a></li>
+<li><a href="#0x04-小结">0x04 小结</a></li>
+</ul></li>
+</ul>
+</nav>
+</div>
+
+<section class="post-content">
+  <p></p>
+
+<h1 id="小记正则-一">小记正则(一)</h1>
+
+<h2 id="0x00-什么是正则表达式">0x00 什么是正则表达式</h2>
+
+<p>​   正则表达式是使用单个字符串来描述、匹配一系列匹配某个句法规则的字符串。 总之，正则表达式就是一个标记语法，简单的描述复杂的语言。比如匹配一个数字 4-6 次，正则就简单的表示为 <code>[0-9]{4,6}</code>。</p>
+
+<h2 id="0x01-常见的标记">0x01 常见的标记</h2>
+
+<p>可以在维基百科上查看<a href="https://zh.wikipedia.org/wiki/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F">正则常用标记</a>。</p>
+
+<h2 id="0x02-浅谈贪婪和非贪婪">0x02 浅谈贪婪和非贪婪</h2>
+
+<p>贪婪和非贪婪是正则语法中非常重要的两种模式，可以说没有这两老大哥，你不禁会感叹正则表达式也不过如此。</p>
+
+<h3 id="贪婪">贪婪</h3>
+
+<p>尽可能多的去匹配某一种模式，遇到不匹配的然后进行回溯。</p>
+
+<p>我们平时常见的贪婪模式有<code>*</code>, <code>+</code>, <code>?</code>, <code>{n,m}</code>, <code>{n,}</code>, <code>{n}</code>。</p>
+
+<p>贪婪的代价很大，假设我有如下的普通的字符串 <code>44546</code>, 我们使用 <code>^.*45</code> 的正则表达式去匹配，执行流程将会如下:</p>
+
+<ol>
+<li>正则 ^, 明白是以匹配方式开头，进行下一个正则</li>
+<li>正则 .*，匹配 4</li>
+<li>正则 .*，匹配 4</li>
+<li>正则 .*，匹配 5</li>
+<li>正则 .*，匹配 4</li>
+<li>正则 .*，匹配 6</li>
+<li>正则 .*, 发现字符串到尾部，不能匹配, 进行下一个正则</li>
+<li>正则 4，发现字符串已经到尾部，往前回溯</li>
+<li>正则 4，回溯到 6，不匹配，继续回溯</li>
+<li>正则 4，回溯到 4，匹配，正则 5，不匹配 6，继续回溯</li>
+<li>正则 4，回溯到 5，不匹配，继续回溯</li>
+<li>正则 4，回溯到 4，匹配，正则 5，匹配 5，匹配成功</li>
+</ol>
+
+<p>可以看见在这个过程中，.* 是一直匹配到最后一个不能的匹配的字符为止，然后往前回溯，匹配结果。这也正是贪婪的思想：尽可能多的去匹配。</p>
+
+<p>回溯的最大长度等于<code>贪婪匹配终点-贪婪匹配起点</code>。</p>
+
+<h3 id="非贪婪">非贪婪</h3>
+
+<p>尽可能少的去匹配某一种模式。非贪婪的模式中，也会出现大量的回溯。</p>
+
+<p>常见的开启贪婪的方式 <code>*?</code>, <code>??</code>, <code>+?</code>, <code>{n,m}?</code>, <code>{n,}?</code>。</p>
+
+<p>假设我们有如下的普通字符串 s=<code>111114</code> , 我们用正则表达式 r=<code>1{3,6}14</code> 去匹配</p>
+
+<ol>
+<li>正则 1，匹配 r[0]=1</li>
+<li>正则 1，匹配 r[1]=1</li>
+<li>正则 1，匹配 r[2]=1</li>
+<li>达到匹配的下限，表示满足 1{3,6} 这个式子，开始跳过 1{3,6} 判断匹配 14</li>
+<li>正则 1，匹配 r[3]=1</li>
+<li>正则 4, 不匹配 r[4]=1, 回溯到 1{3,6},  1{3,6}再多匹配一次1，然后回到 14</li>
+<li>正则1，匹配 r[4]=1</li>
+<li>正则4，匹配 r[5]=4</li>
+<li>匹配结束</li>
+</ol>
+
+<p>从整个匹配过程可以看出</p>
+
+<ol>
+<li>首先要满足匹配的下限，如果下限满足不了，即表示不符合规则，再怎么尽可能少也不行</li>
+<li>达到下限后，不急着继续匹配了，先判断后面模式的是否满足条件，如果不满足条件，则再多匹配一次模式，继续判断后面的模式，每次加一个</li>
+</ol>
+
+<h2 id="0x03-浅谈">0x03 浅谈 |</h2>
+
+<p>在正则中我们会遇见 | ，这个记号，通常来匹配句子。比如 (ab | cd)，表示ab或者cd。</p>
+
+<p>但是 | 这个语句，如果不适当优化，也是容易出现大量的回溯。</p>
+
+<p>一个很简单的例子:</p>
+
+<p>用正则 <code>aabb|aacb</code> 来匹配普通字符串  r=<code>aacb</code></p>
+
+<p><img src="/images/regex/aabb.png" alt="未命名文件" /></p>
+
+<p>这个过程会先从aabb这条链出发</p>
+
+<ol>
+<li>正则a，匹配 r[0] = a</li>
+<li>正则a，匹配 r[1] = a</li>
+<li>正则b，不匹配 r[2] = c ，回溯r到下标0，匹配另外一条链</li>
+</ol>
+
+<p>匹配aacb这条链条, 这个时候r的下标又会从0开始</p>
+
+<ol>
+<li>正则a，匹配 r[0] = a</li>
+<li>正则a，匹配 r[1] = a</li>
+<li>正则c，匹配 r[2] = c</li>
+<li>正则b，匹配 r[3] = b</li>
+<li>匹配结束</li>
+</ol>
+
+<p>可以看出一条链进行失败，会切换到另外一条链，而且r的下标也会回溯到匹配开始的位置。</p>
+
+<p>但是从图中来看,  aa 是两条链的公共前缀，实际上应该从 aa 后面开始分叉，这样就可以有效减少回溯次数。</p>
+
+<p>优化之后的正则表达式 <code>aa(bb|cb)</code></p>
+
+<h2 id="0x04-小结">0x04 小结</h2>
+
+<p>​   平时我们在写正则表达式的时候，应该了解其匹配原理，然后设计出一个经过优化的表达式。毕竟，你永远也想不到，<code>.*</code> 这种回溯会给你带来多大的影响😄。</p>
+</section>
+
+<div class="share">
+  <a href="http://www.facebook.com/sharer.php?src=bm&u=http%3a%2f%2fwww.dawndevil.cn%2f%25E5%25B0%258F%25E8%25AE%25B0%25E6%25AD%25A3%25E5%2588%2599%2f&t=%e5%b0%8f%e8%ae%b0%e6%ad%a3%e5%88%99%28%e4%b8%80%29" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-facebook"></i></a>
+  <a href="http://twitter.com/intent/tweet?url=http%3a%2f%2fwww.dawndevil.cn%2f%25E5%25B0%258F%25E8%25AE%25B0%25E6%25AD%25A3%25E5%2588%2599%2f&text=%e5%b0%8f%e8%ae%b0%e6%ad%a3%e5%88%99%28%e4%b8%80%29&tw_p=tweetbutton" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-twitter"></i></a>
+  <a href="https://plus.google.com/share?url=http%3a%2f%2fwww.dawndevil.cn%2f%25E5%25B0%258F%25E8%25AE%25B0%25E6%25AD%25A3%25E5%2588%2599%2f" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-google-plus"></i></a>
+  <a href="http://getpocket.com/edit?url=http%3a%2f%2fwww.dawndevil.cn%2f%25E5%25B0%258F%25E8%25AE%25B0%25E6%25AD%25A3%25E5%2588%2599%2f&title=%e5%b0%8f%e8%ae%b0%e6%ad%a3%e5%88%99%28%e4%b8%80%29" onclick="window.open(this.href, 'PCwindow', 'width=550, height=350, menubar=no, toolbar=no, scrollbars=yes'); return false;"><i class="fa fa-get-pocket"></i></a>
+</div>
+
+<div class="post-meta-code">
+  <div class="desc">
+    public string description() {
+    <div class="desc">val author = "
+    
+        <a href="mailto:"></a>
+    ";
+    </div>
+    
+    <div class="desc">
+      val categories = [
+      
+      
+      <a href="http://www.dawndevil.cn//categories/%E6%97%A5%E5%B8%B8">"日常"</a>
+      
+      ];
+    </div>
+    
+    }
+  </div>
+  <div class="desc">
+    public string tags() {
+      <div class="desc">
+        val tags = [
+        
+          
+          <a href="http://www.dawndevil.cn/tags/%E6%80%BB%E7%BB%93">"总结"</a>
+          
+        
+        ];
+      </div>
+    }
+  </div>
+</div>
+
+
+<div class="post-comment">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "doorofchoices" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<div class="paging post-paging">
+  
+  
+  <a class="right" href="http://www.dawndevil.cn/java%E9%BB%98%E8%AE%A4%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" rel="next">
+    <span>Java默认动态代理</span> <i class="fa fa-caret-right" aria-hidden="true"></i>
+  </a>
+  
+</div>
+
+<footer class="footer">
+  COPYRIGHT (C) <a href="https://blog.lulab.net">DONGGEUN,BANG</a>. ALL RIGHTS RESERVED.
+</footer>
+
+</body>
+</html>
+
